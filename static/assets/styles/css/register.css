@@ -1,0 +1,40 @@
+body {
+    background-color: #f5f7f9;
+}
+
+*[role="form"] {
+   max-width: 530px;
+   padding: 15px;
+   margin: 0 auto;
+   border-radius: 0.3em;
+   background-color: #f2f2f2;
+}
+
+*[role="form"] h2 { 
+   font-family: 'Open Sans' , sans-serif;
+   font-size: 40px;
+   font-weight: 600;
+   color: #000000;
+   margin-top: 5%;
+   text-align: center;
+   text-transform: uppercase;
+   letter-spacing: 4px;
+}
+
+ button {
+    background-color: #00AA67;
+    color: #fff;
+    width: 100%;
+    border-radius: 3px;
+    min-height: 38px;
+    font-weight: 600;
+  }
+  
+   button:focus,
+  button:hover {
+    transform: scale(1.02, 1.02);
+    color: #fff;
+    background-color: #00AA67;
+  }
+
+  

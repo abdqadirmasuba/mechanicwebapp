@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+
+    <link rel="stylesheet" href="{% static 'assets/styles/css/register.css'%}">
+</head>
+
+<body>
+    <div class="container mt-5 mb-5">
+        <form class="form-horizontal" action="{% url 'mymodels:register' %}" role="form" method="post" onsubmit="return addLocation();">
+            {% csrf_token %}
+            <h2>Registration</h2>
+            <div class="form-group">
+                <label for="firstName" class="col-sm-3 control-label">Username</label>
+                <div class="col-sm-9">
+                    {{ reg_form.username}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lastName" class="col-sm-3 control-label">Email</label>
+                <div class="col-sm-9">
+                    {{ reg_form.email}}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-3 control-label">Password*</label>
+                <div class="col-sm-9">
+                    {{ reg_form.password1 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-3 control-label">Confirm Password*</label>
+                <div class="col-sm-9">
+                    {{ reg_form.password2 }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="birthDate" class="col-sm-3 control-label">Experience</label>
+                <div class="col-sm-9">
+                    {{ reg_form.experience }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber" class="col-sm-3 control-label">vehicles of expertise </label>
+                <div class="col-sm-9">
+                    {{ reg_form.vehicles_of_expertise }}
+                    <span class="help-block">Mention kinds or categories of vechicals </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Height" class="col-sm-3 control-label">location </label>
+                <div class="col-sm-9">
+                    {{ reg_form.location }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="weight" class="col-sm-3 control-label">Work hours </label>
+                <div class="col-sm-9">
+                    {{ reg_form.work_hours }}
+                </div>
+            </div>
+            <input type="hidden" id="latitude" name="latitude">
+            <input type="hidden" id="longitude" name="longitude">
+
+            <button type="submit" class="btn btn-block">Register</button>
+        </form> <!-- /form -->
+    </div> <!-- ./container -->
+
+    <script>
+        function addLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+                    document.forms[0].submit();
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                return false;
+            }
+            return false; // Prevent the form from submitting until the location is set
+        }
+    </script>
+
+
+</body>
+
+</html>
