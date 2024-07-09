@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -5,13 +6,41 @@ from django.contrib import messages
 from .forms import MechanicRegistrationForm
 from .models import Mechanic
 from django.contrib.gis.geos import Point
+from django.shortcuts import render, redirect
+from .models import Mechanic
+from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import D
+from django.core.serializers import serialize
+from django.http import JsonResponse
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import fromstr
+
 
 # Create your views here.
 
 def home(request):
-    return render(request,"mymodels/home.html")
+    all_mechanics = Mechanic.objects.all()
+    all_mechanics_json = json.loads(serialize('geojson', all_mechanics))
 
-def login(request):
+    return render(request, 'mymodels/home.html', {
+        'all_mechanics': all_mechanics,
+        'all_mechanics_json': all_mechanics_json,
+    })
+
+def get_nearby_mechanics(request):
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+
+    if lat and lng:
+        user_location = fromstr(f'POINT({lng} {lat})', srid=4326)
+        nearby_mechanics = Mechanic.objects.annotate(distance=Distance('geo_location', user_location)).filter(distance__lte=D(km=10)).order_by('distance')
+        nearby_mechanics_json = json.loads(serialize('geojson', nearby_mechanics))
+        return JsonResponse(nearby_mechanics_json, safe=False)
+    return JsonResponse({'error': 'Invalid location'}, status=400)
+
+
+def auth_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -21,7 +50,7 @@ def login(request):
             return redirect('mechanic:dashboard')
         else:
             messages.error(request, 'password or user name is wrong')
-            return redirect('general:login')
+            return redirect('mymodels:auth_login')
              
     return render(request,"mymodels/login.html")
 

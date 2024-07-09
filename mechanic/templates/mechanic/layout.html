@@ -33,10 +33,7 @@
                <div class="brand">
                   <div class="logo">
                      <img src="{% static 'assets/images/psiug.png' %}" alt="" />
-                  </div>
-                  <div class="brand-name">
-                     Invoice tracker
-                  </div>
+                  </div>                  
                </div>
 
                <div class="user-info d-flex">
@@ -45,7 +42,7 @@
                         <img src="{% static 'assets/images/avator.png' %}" alt="">
                      </div>
                      <div class="info">
-                        <div>masuba Abdqadir</div>
+                        <div>{{ user.username }}</div>
                         <div>my title - procuremnt</div>
                      </div>
                   </div>
@@ -58,13 +55,13 @@
                     <!-- Dropdown-->
                     <li class="dropdown">
                     <a class="dropdown" id="dropdown"><i class="fa fa-file-text-o" aria-hidden="true"></i>
-                        Invoices</a>
+                        Requests Management</a>
                     <div class="inner-menu" id="menu">
                         <ul class="">
                            
-                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i> Incoming Invoice</a>
+                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i>View Requests</a>
                             </li>
-                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i> Rejected Invoices</a>
+                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i> New request</a>
                             </li>
                         </ul>
                     </div>

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('mymodels.urls',namespace='mymodels')),
     path('mechanic',include('mechanic.urls',namespace='mechanic')),
+    path('car',include('car_owner.urls',namespace='car_oner')),
 ]
 if settings.DEBUG:
         urlpatterns += static(settings.MEDIA_URL,

@@ -1,0 +1,26 @@
+.navbar {
+    background-color: #8FC7C7;
+}
+.navbar-brand {
+    color: white;
+}
+.navbar-nav .nav-link {
+    color: white;
+}
+.request-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+.mechanic-list {
+    max-width: 600px;
+    margin: 20px auto;
+}
+.mechanic-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}

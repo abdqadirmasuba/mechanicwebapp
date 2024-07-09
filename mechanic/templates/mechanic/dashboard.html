@@ -12,7 +12,7 @@
             <i class="fa fa-code-fork"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">12</span>
-              <span class="count-name">Flowz</span>
+              <span class="count-name">Total Requests</span>
             </div>
           </div>
         </div>
@@ -22,7 +22,7 @@
             <i class="fa fa-ticket"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">7</span>
-              <span class="count-name">Rejected</span>
+              <span class="count-name">Completed Requests</span>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
             <i class="fa fa-database"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">6</span>
-              <span class="count-name">Total invoices</span>
+              <span class="count-name">Pending Requests</span>
             </div>
           </div>
         </div>
@@ -73,26 +73,28 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Invoice Number</th>
-                    <th scope="col">Purchase order</th>
-                    <th scope="col">Supplier</th>
-                    <th scope="col">Editor</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">total amount</th>
+                    <th scope="col">req_id</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Approve</th>
+                    <th scope="col">Reject</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for req in myrequests%}
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ req.id }}</td>
+                    <td>{{ req.description }}</td>
                     <td>{{ req.status }}</td>
                     <td>{{ req.created_at }}</td>
-                    <td>{{ req.updated_at }}</td> 
-                    
+                    <td>{{ req.updated_at }}</td>
+                    <td>{{ req.updated_at }}</td>                  
                   </tr> 
                   {% empty %}
                   <tr>
-                    <td colspan="4">No such invoices</td>
+                    <td colspan="4">No awaiting requests</td>
                   </tr>
                   {% endfor %}                 
                 </tbody>
