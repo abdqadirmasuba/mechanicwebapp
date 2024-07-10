@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'mechanic.context_processors.notifications',
             ],
         },
     },
@@ -101,7 +102,7 @@ WSGI_APPLICATION = 'mechanic_webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'mechanicweb',
+        'NAME': 'mechanicweb2',
         'USER': 'postgres',
         'PASSWORD': '88100',
         'HOST': 'localhost',

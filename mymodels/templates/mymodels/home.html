@@ -46,10 +46,10 @@
         <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
                 <li class="nav-item mr-5">
-                    <a class="nav-link" href="{% url 'mymodels:login' %}">Available Mechanics</a>
+                    <a class="nav-link" href="">Available Mechanics</a>
                 </li>
                 <li class="nav-item mr-3">
-                    <a class="nav-link btn btn-primary" href="{% url 'mymodels:login' %}">Login</a>
+                    <a class="nav-link btn btn-primary" href="{% url 'mymodels:login_view' %}">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link btn btn-success" href="{% url 'mymodels:register' %}">Signup</a>
@@ -79,10 +79,11 @@
                         {% for mechanic in all_mechanics %}
                         <div class="col-md-4">
                             <div class="mechanic-item">
-                                <p><strong>{{ mechanic.user.username }}</strong></p>
+                                <p><strong>{{ mechanic.Custom.username }}</strong></p>
                                 <p>Experience: {{ mechanic.experience }} years</p>
                                 <p>Location: {{ mechanic.location }}</p>
                                 <p>Work Hours: {{ mechanic.work_hours }}</p>
+                                <p>geo : {{ mechanic.geo_location }}</p>
                                 <a href="" class="btn btn-primary">Make a Request</a>
                             </div>
                         </div>

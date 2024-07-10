@@ -13,8 +13,8 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
 from django.core.serializers import serialize
 from django.http import JsonResponse
-from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
+from mechanic.forms import CustomUserChangeForm
 
 
 # Create your views here.
@@ -40,7 +40,7 @@ def get_nearby_mechanics(request):
     return JsonResponse({'error': 'Invalid location'}, status=400)
 
 
-def auth_login(request):
+def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -50,7 +50,7 @@ def auth_login(request):
             return redirect('mechanic:dashboard')
         else:
             messages.error(request, 'password or user name is wrong')
-            return redirect('mymodels:auth_login')
+            return redirect('mymodels:login_view')
              
     return render(request,"mymodels/login.html")
 
@@ -71,7 +71,6 @@ def register(request):
                 geo_location=geo_location
             )
             login(request, user)
-            print("sent in ")
             return redirect('mechanic:dashboard')
    
     else:
@@ -82,4 +81,4 @@ def register(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('mechanic:dashboard')
+    return redirect('mymodels:login_view')

@@ -2,7 +2,8 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 
-class User(AbstractUser):
+class Custom_User(AbstractUser):
+    profile = models.ImageField(upload_to='Profile/user/',blank=True,null=True)
     groups = models.ManyToManyField(
         Group,
         related_name='custom_user_set',  # Add a custom related_name
@@ -17,12 +18,13 @@ class User(AbstractUser):
         help_text=('Specific permissions for this user.'),
         verbose_name=('user permissions')
     )
+    
 
     def __str__(self):
         return self.username
 
 class Mechanic(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(Custom_User, on_delete=models.CASCADE)
     experience = models.IntegerField()
     vehicles_of_expertise = models.TextField()
     location = models.CharField(max_length=255)
@@ -55,7 +57,7 @@ class Request(models.Model):
         ('Completed', 'Completed'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
     car_model = models.CharField(max_length=255)
     car_number = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=20)
@@ -80,3 +82,13 @@ class Availability(models.Model):
 
     def __str__(self):
         return f'{self.mechanic.user.username} - {self.day_of_week} ({self.start_time} to {self.end_time})'
+
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.message
