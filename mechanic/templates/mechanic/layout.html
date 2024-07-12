@@ -47,7 +47,7 @@
                      </div>
                      <div class="info">
                         <div>{{ user.first_name }} {{ user.last_name }}</div>
-                        <div class="role">Finance Manager</div>
+                        <div class="role">{{ user.username }}</div>
                      </div>
                   </div>
                </div>
@@ -63,15 +63,15 @@
                     <div class="inner-menu" id="menu">
                         <ul class="">
                            
-                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i>View Requests</a>
-                            </li>
-                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i> New request</a>
+                           <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i>View New request</a>
+                           </li>
+                            <li><a href=""><i class="fa fa-circle-o" aria-hidden="true"></i>View Past Requests</a>
                             </li>
                         </ul>
                     </div>
                     </li>
                     <li><a href=""><i class="fa fa-bell-o" aria-hidden="true"></i> Notification Logs</a></li>
-                    <li><a href=""><i class="fa fa-user-circle-o" aria-hidden="true"></i></i> My Profile</a></li>
+                    <li><a href="{% url 'mechanic:profile' %}"><i class="fa fa-user-circle-o" aria-hidden="true"></i></i> My Profile</a></li>
                     <li><a href="{% url 'mymodels:logout_view' %}"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a></li>
                 </ul>
             </div>   

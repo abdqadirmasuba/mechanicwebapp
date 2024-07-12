@@ -5,6 +5,6 @@ app_name = 'car_owner'
 
 urlpatterns=[
 
-    path('', views.place_request, name='request'),
+    path('<int:mec>/', views.place_request, name='request'),
 
 ]

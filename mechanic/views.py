@@ -41,7 +41,7 @@ def dashboard(request):
 
 @login_required
 def user_info_update(request):
-    info_form = Mechanic(instance=request.user)
+    info_form = CustomUserChangeForm(instance=request.user)
     if request.method == 'POST':
         info_form = CustomUserChangeForm(request.POST,request.FILES,instance=request.user)
         if info_form.is_valid():

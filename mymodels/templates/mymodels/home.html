@@ -83,8 +83,9 @@
                                 <p>Experience: {{ mechanic.experience }} years</p>
                                 <p>Location: {{ mechanic.location }}</p>
                                 <p>Work Hours: {{ mechanic.work_hours }}</p>
-                                <p>geo : {{ mechanic.geo_location }}</p>
-                                <a href="" class="btn btn-primary">Make a Request</a>
+                                <p>geo : {{ example_latitude }}</p>
+                                <p>geo : {{ example_longitude }}</p>
+                                <a href="{% url 'car_owner:request' mec=mechanic.user.id %}" class="btn btn-primary">Make a Request</a>
                             </div>
                         </div>
                         {% empty %}
@@ -98,12 +99,13 @@
                     {% for mechanic in nearby_mechanics %}
                     <div class="mechanic-item">
                         <p><strong>{{ mechanic.user.username }}</strong></p>
+                        <p><strong>{{ mechanic.user.id }}</strong></p>
                         <p>Experience: {{ mechanic.experience }} years</p>
                         <p>Location: {{ mechanic.location }}</p>
                         <p>Work Hours: {{ mechanic.work_hours }}</p>
                         <p>geo : {{ mechanic.geo_location }}</p>
 
-                        <a href="" class="btn btn-primary">Make a Request</a>
+                        <a href="{% url 'car_owner:request' me=mechanic.user.id  %}" class="btn btn-primary">Make a Request</a>
                     </div>
                     {% empty %}
                     <div class="card p-4">
@@ -123,7 +125,7 @@
     <script async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBblqkczOq7BRPD5U77_17jltgzu6ZL6Pk&loading=async&callback=initMap">
         </script>
-    <script type="application/json" id="mechanics-data">{{ all_mechanics_json|json_script:"mechanics" }}</script>
+    <script type="application/json" id="mechanics-data">{{ all_mechanics_json|json_script:"nearby_mechanics" }}</script>
     <script>
 
         function initMap() {
@@ -136,20 +138,19 @@
                     center: { lat: lat, lng: lng }
                 });
 
-                // Example marker creation
                 new google.maps.Marker({
                     position: { lat: lat, lng: lng },
                     map: map,
                     title: 'My Location'
                 });
 
+                var mechanicsDataString = document.getElementById('mechanics-data').textContent;
+                var mechanicsData = JSON.parse(mechanicsDataString);
 
 
+                var mechanics = JSON.parse(mechanicsDataString);
 
-                // Assuming mechanics_data is a global variable holding your mechanics data
-                var mechanics = JSON.parse(mechanics_data);
-
-                console.log(mechanics)
+                console.log(mechanicsData)
 
                 mechanics.features.forEach(function (mechanic) {
                     var coordinates = mechanic.geometry.coordinates;
@@ -157,9 +158,10 @@
                         position: { lat: coordinates[1], lng: coordinates[0] },
                         map: map,
                         title: mechanic.properties.username,
-                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker for mechanics
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
                     });
                 });
+
 
 
             });
