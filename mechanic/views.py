@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from mymodels.models import Request, Mechanic
+from mymodels.models import Request, Notification
 from django.contrib.auth.password_validation import validate_password, MinimumLengthValidator, CommonPasswordValidator
 from django.contrib import messages
 from .forms  import CustomUserChangeForm
@@ -35,8 +35,11 @@ class EmailThread(threading.Thread):
 
 @login_required
 def dashboard(request):
-    myrequests = Request.objects.all()
-    return render(request,"mechanic/dashboard.html",{myrequests:myrequests})
+    myrequests = Request.objects.filter(user=request.user)
+    
+    print(myrequests)
+    return render(request,"mechanic/dashboard.html",{'myrequests':myrequests})
+
 
 
 @login_required
@@ -58,6 +61,12 @@ def user_info_update(request):
 @login_required
 def profile(request):
     return render(request,"mechanic/profile.html")
+
+@login_required
+def notification_logs(request):
+    notification = Notification.objects.filter(user=request.user)
+    return render(request,"mechanic/notificationlog.html",{'notification':notification})
+
 
 
 class RequestPasswordResetEmail(View):

@@ -71,7 +71,7 @@
                     <tr>
                         <td> {{ notifi.notification.created_at| timesince }} ago</td>
                         <td>{{ notifi.notification.message }}</td>
-                        <td><a href="{% url 'procurement:notification_act' pk=notifi.id %}"> action</a></td>
+                        <td><a href=""> action</a></td>
                         {% comment %} <td>
                             {% if notifi.is_read ==1 %}
                             <span class="fa fa-eye-slash"></span>

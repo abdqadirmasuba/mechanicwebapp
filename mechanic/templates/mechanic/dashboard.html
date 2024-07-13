@@ -59,11 +59,12 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">req_id</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Car model</th>
                     <th scope="col">Status</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Approve</th>
-                    <th scope="col">Reject</th>
+                    <th scope="col">car number</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">email</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -71,11 +72,12 @@
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ req.id }}</td>
-                    <td>{{ req.description }}</td>
+                    <td>{{ req.car_model }}</td>
                     <td>{{ req.status }}</td>
                     <td>{{ req.created_at }}</td>
-                    <td>{{ req.updated_at }}</td>
-                    <td>{{ req.updated_at }}</td>                  
+                    <td>{{ req.car_number }}</td>
+                    <td>{{ req.phone_number }}</td>                  
+                    <td>{{ req.email }}</td>                  
                   </tr> 
                   {% empty %}
                   <tr>

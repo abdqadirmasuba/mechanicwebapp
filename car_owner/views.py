@@ -1,9 +1,9 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from .forms import RequestForm
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
-from mymodels.models import Mechanic,Custom_User
+from mymodels.models import Mechanic,Custom_User,Notification
 from django.contrib import messages
 
 def place_request(request, mec):
@@ -22,8 +22,23 @@ def place_request(request, mec):
             request_instance.user = mechanic  # mechanic requested for service
             request_instance.save()
             # Optionally, you can redirect to a success page or the request detail page
-            messages.success(request, 'Request has been sent')
-            return (" submited")
+            # messages.success(request, 'Request has been sent')
+            email = request.POST.get('email')
+            car_number = request.POST.get('car_number')
+
+            notification = Notification(
+                user = mechanic,
+                message = f"New request: {email} from {car_number}"
+            )
+            notification.save()
+            return redirect('/')
+        
+        
+        print(f"request.POST type: {type(request.POST)}")
+        print(f"latitude: {latitude}, longitude: {longitude}")
+        print(f"form.is_valid(): {form.is_valid()}")
+
+
     else:
         form = RequestForm()
 

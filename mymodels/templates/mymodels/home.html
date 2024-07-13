@@ -79,12 +79,11 @@
                         {% for mechanic in all_mechanics %}
                         <div class="col-md-4">
                             <div class="mechanic-item">
-                                <p><strong>{{ mechanic.Custom.username }}</strong></p>
+                                <p>Name: <strong>{{ mechanic.user.username }}</strong></p>
                                 <p>Experience: {{ mechanic.experience }} years</p>
                                 <p>Location: {{ mechanic.location }}</p>
+                                <p>Location: {{ mechanic.location }}</p>
                                 <p>Work Hours: {{ mechanic.work_hours }}</p>
-                                <p>geo : {{ example_latitude }}</p>
-                                <p>geo : {{ example_longitude }}</p>
                                 <a href="{% url 'car_owner:request' mec=mechanic.user.id %}" class="btn btn-primary">Make a Request</a>
                             </div>
                         </div>
@@ -125,48 +124,64 @@
     <script async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBblqkczOq7BRPD5U77_17jltgzu6ZL6Pk&loading=async&callback=initMap">
         </script>
-    <script type="application/json" id="mechanics-data">{{ all_mechanics_json|json_script:"nearby_mechanics" }}</script>
     <script>
-
+        // Function to initialize the map and markers
         function initMap() {
+            // Get user's current location using geolocation API
             navigator.geolocation.getCurrentPosition(function (position) {
-                var lat = position.coords.latitude;
-                var lng = position.coords.longitude;
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
 
+                // Create a map centered on the user's current location
                 var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 10,
-                    center: { lat: lat, lng: lng }
+                    center: { lat: userLat, lng: userLng }
                 });
 
-                new google.maps.Marker({
-                    position: { lat: lat, lng: lng },
+                new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
                     map: map,
-                    title: 'My Location'
+                    center: { lat: userLat, lng: userLng },
+                    radius: 10000  // 10km in meters
                 });
 
-                var mechanicsDataString = document.getElementById('mechanics-data').textContent;
-                var mechanicsData = JSON.parse(mechanicsDataString);
+                // Marker for user's current location
+                new google.maps.Marker({
+                    position: { lat: userLat, lng: userLng },
+                    map: map,
+                    title: 'Your Location',
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'  // Red marker for user's location
+                });
 
+                // Retrieve mechanics data from Django JSON embedded in the template
+                var mechanicsData = JSON.parse(document.getElementById('mechanics-data').textContent);
 
-                var mechanics = JSON.parse(mechanicsDataString);
+                mechanicsData.forEach(function (mechanic) {
+                    // Extract coordinates from geo_location field
+                    var pointStr = mechanic.fields.geo_location;
+                    var coordinates = pointStr.match(/\d+\.\d+/g);
 
-                console.log(mechanicsData)
+                    var mechanicLng = parseFloat(coordinates[0]);  // Longitude
+                    var mechanicLat = parseFloat(coordinates[1]);  // Latitude
 
-                mechanics.features.forEach(function (mechanic) {
-                    var coordinates = mechanic.geometry.coordinates;
+                    // Marker for each mechanic
                     new google.maps.Marker({
-                        position: { lat: coordinates[1], lng: coordinates[0] },
+                        position: { lat: mechanicLat, lng: mechanicLng },
                         map: map,
-                        title: mechanic.properties.username,
-                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                        title: mechanic.fields.user__username,  // Adjust according to your model structure
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'  // Blue marker for mechanics
                     });
                 });
-
-
-
             });
-
         }
+    </script>
+    <!-- Embed mechanics data from Django as JSON -->
+    <script type="application/json" id="mechanics-data">
+        {{ all_mechanics_json|safe }}
     </script>
 
 </body>
