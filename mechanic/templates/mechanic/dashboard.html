@@ -12,7 +12,7 @@
             <i class="fa fa-code-fork"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">12</span>
-              <span class="count-name">Flowz</span>
+              <span class="count-name">Total Requests</span>
             </div>
           </div>
         </div>
@@ -22,7 +22,7 @@
             <i class="fa fa-ticket"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">7</span>
-              <span class="count-name">Rejected</span>
+              <span class="count-name">Completed Requests</span>
             </div>
           </div>
         </div>
@@ -32,7 +32,7 @@
             <i class="fa fa-database"></i>
             <div class="ms-auto me-2">
               <span class="count-numbers">6</span>
-              <span class="count-name">Total invoices</span>
+              <span class="count-name">Pending Requests</span>
             </div>
           </div>
         </div>
@@ -48,22 +48,7 @@
         </div>
       </div>
     </div>
-    <div class="visuals">
-      <div class="graphs">
-        <div class="bar">
-          <div class="mb-2">
-            Total invoices worked on per month
-          </div>
-          <canvas id="myChart"></canvas>
-        </div>
-        <div class="doughnut">
-          <div class="mb-2">
-            Invoices at departments
-          </div>
-          <canvas id="doughnut"></canvas>
-        </div>
-       </div>
-      </div>
+    <div class="visuals">      
       <div class="tables">
         <div class="mb-2">
           Sent In Requests
@@ -73,26 +58,30 @@
                 <thead>
                   <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Invoice Number</th>
-                    <th scope="col">Purchase order</th>
-                    <th scope="col">Supplier</th>
-                    <th scope="col">Editor</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">total amount</th>
+                    <th scope="col">req_id</th>
+                    <th scope="col">Car model</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">car number</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">email</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for req in myrequests%}
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ req.id }}</td>
+                    <td>{{ req.car_model }}</td>
                     <td>{{ req.status }}</td>
                     <td>{{ req.created_at }}</td>
-                    <td>{{ req.updated_at }}</td> 
-                    
+                    <td>{{ req.car_number }}</td>
+                    <td>{{ req.phone_number }}</td>                  
+                    <td>{{ req.email }}</td>                  
                   </tr> 
                   {% empty %}
                   <tr>
-                    <td colspan="4">No such invoices</td>
+                    <td colspan="4">No awaiting requests</td>
                   </tr>
                   {% endfor %}                 
                 </tbody>

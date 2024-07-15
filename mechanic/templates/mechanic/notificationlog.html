@@ -1,0 +1,92 @@
+{% extends 'mechanic/layout.html' %}
+{% load static %}
+
+{% block popup-model %}
+    <!-- Modal -->
+    <div class="modal fade " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered notification-model">
+          <div class="modal-content">
+            <div class="d-flex">
+              <button type="button" class="btn-close ms-auto me-2 mt-2" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div>
+                <div class="head">
+                    Message
+                </div>
+                <div class="body">
+                    This document is missing some parts 
+                </div>
+                <div class="head">
+                    From
+                </div>
+                <div class="body">
+                    masuba -procurement 
+                </div>
+                <div class="head">
+                    At
+                </div>
+                <div class="body">
+                    13-july 2023 8:14
+                </div>
+                <div class="head">
+                    Reason
+                </div>
+                <div class="body">
+                    New invoice ID1126 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+
+{% endblock popup-model %}
+
+
+{%block main-content %}
+
+<div class="bread-crumb">
+    <div class="cont">
+        <span>Notification logs</span>
+    </div>
+</div>
+<div class="invoice-list">
+    <div class="cont-card">
+        <div class="head">
+            <h3>My notification logs</h3>
+        </div>
+        <div class="table-content">
+            <div class="table-responsive">
+            <table id="notifications-logs" class="notification-logs">
+                <thead>
+                    <tr>
+                        <th>Sent at</th>
+                        <th>message</th>
+                        <th>view details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notifi in notificaton %}
+                    <tr>
+                        <td> {{ notifi.notification.created_at| timesince }} ago</td>
+                        <td>{{ notifi.notification.message }}</td>
+                        <td><a href=""> action</a></td>
+                        {% comment %} <td>
+                            {% if notifi.is_read ==1 %}
+                            <span class="fa fa-eye-slash"></span>
+                            {% else %}
+                            <span class="fa fa-eye"></span>
+                            {% endif %}
+                        </td> {% endcomment %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>            
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %} {% include 'procurement/notification_detail_popup.html' %} {% endcomment %}
+
+{% endblock main-content %}

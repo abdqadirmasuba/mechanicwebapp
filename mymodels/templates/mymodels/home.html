@@ -1,11 +1,189 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mechanic Web App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/styles/css/home.css'%}">
+    <style>
+        .navbar {
+            background-color: #8A3FFC;
+        }
+
+        .navbar-brand {
+            color: white;
+        }
+
+        .navbar-nav .nav-link {
+            color: white;
+        }
+
+        .map-container {
+            height: 350px;
+            width: 100%;
+        }
+
+        .mechanic-list {
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .mechanic-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
+
 <body>
-    <a href="/login">login mechanic</a>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">MechanicWebApp</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item mr-5">
+                    <a class="nav-link" href="">Available Mechanics</a>
+                </li>
+                <li class="nav-item mr-3">
+                    <a class="nav-link btn btn-primary" href="{% url 'mymodels:login_view' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-success" href="{% url 'mymodels:register' %}">Signup</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div id="map" class="map-container"></div>
+
+        <div class="mechanic-list">
+            <ul class="nav nav-tabs" id="mechanicTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="all-mechanics-tab" data-toggle="tab" href="#all-mechanics" role="tab"
+                        aria-controls="all-mechanics" aria-selected="true">All Mechanics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nearby-mechanics-tab" data-toggle="tab" href="#nearby-mechanics" role="tab"
+                        aria-controls="nearby-mechanics" aria-selected="false">Mechanics within 10km</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="mechanicTabsContent">
+                <div class="tab-pane fade show active" id="all-mechanics" role="tabpanel"
+                    aria-labelledby="all-mechanics-tab">
+                    <div class="row m-2">
+                        {% for mechanic in all_mechanics %}
+                        <div class="col-md-4">
+                            <div class="mechanic-item">
+                                <p>Name: <strong>{{ mechanic.user.username }}</strong></p>
+                                <p>Experience: {{ mechanic.experience }} years</p>
+                                <p>Location: {{ mechanic.location }}</p>
+                                <p>Location: {{ mechanic.location }}</p>
+                                <p>Work Hours: {{ mechanic.work_hours }}</p>
+                                <a href="{% url 'car_owner:request' mec=mechanic.user.id %}" class="btn btn-primary">Make a Request</a>
+                            </div>
+                        </div>
+                        {% empty %}
+                    </div>
+                    <div class="card p-4">
+                        <p>No Mechanics found.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="tab-pane fade" id="nearby-mechanics" role="tabpanel" aria-labelledby="nearby-mechanics-tab">
+                    {% for mechanic in nearby_mechanics %}
+                    <div class="mechanic-item">
+                        <p><strong>{{ mechanic.user.username }}</strong></p>
+                        <p><strong>{{ mechanic.user.id }}</strong></p>
+                        <p>Experience: {{ mechanic.experience }} years</p>
+                        <p>Location: {{ mechanic.location }}</p>
+                        <p>Work Hours: {{ mechanic.work_hours }}</p>
+                        <p>geo : {{ mechanic.geo_location }}</p>
+
+                        <a href="{% url 'car_owner:request' me=mechanic.user.id  %}" class="btn btn-primary">Make a Request</a>
+                    </div>
+                    {% empty %}
+                    <div class="card p-4">
+                        <p>No Mechanics found within 10km distance around you.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBblqkczOq7BRPD5U77_17jltgzu6ZL6Pk&loading=async&callback=initMap">
+        </script>
+    <script>
+        // Function to initialize the map and markers
+        function initMap() {
+            // Get user's current location using geolocation API
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+
+                // Create a map centered on the user's current location
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: { lat: userLat, lng: userLng }
+                });
+
+                new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: { lat: userLat, lng: userLng },
+                    radius: 10000  // 10km in meters
+                });
+
+                // Marker for user's current location
+                new google.maps.Marker({
+                    position: { lat: userLat, lng: userLng },
+                    map: map,
+                    title: 'Your Location',
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'  // Red marker for user's location
+                });
+
+                // Retrieve mechanics data from Django JSON embedded in the template
+                var mechanicsData = JSON.parse(document.getElementById('mechanics-data').textContent);
+
+                mechanicsData.forEach(function (mechanic) {
+                    // Extract coordinates from geo_location field
+                    var pointStr = mechanic.fields.geo_location;
+                    var coordinates = pointStr.match(/\d+\.\d+/g);
+
+                    var mechanicLng = parseFloat(coordinates[0]);  // Longitude
+                    var mechanicLat = parseFloat(coordinates[1]);  // Latitude
+
+                    // Marker for each mechanic
+                    new google.maps.Marker({
+                        position: { lat: mechanicLat, lng: mechanicLng },
+                        map: map,
+                        title: mechanic.fields.user__username,  // Adjust according to your model structure
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'  // Blue marker for mechanics
+                    });
+                });
+            });
+        }
+    </script>
+    <!-- Embed mechanics data from Django as JSON -->
+    <script type="application/json" id="mechanics-data">
+        {{ all_mechanics_json|safe }}
+    </script>
+
 </body>
+
 </html>

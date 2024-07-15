@@ -1,0 +1,102 @@
+{% extends 'mechanic/layout.html' %}
+{% load static %}
+{%block main-content %}
+
+<div class="bread-crumb">
+    <div class="cont">              
+        <span>User Profile</span>              
+    </div>
+</div>
+ <div class="cont-container">
+    <div class="profile">
+       <div class="cover">
+       </div>
+       <div class="image">
+        {% if user.profile %}
+        <img src="{{ user.profile.url }}" alt="">
+        {% else %}
+        <img src="{% static 'assets/images/avator.png' %}" alt="">
+        {% endif %}
+       </div>
+       
+       <div class="d-flex">
+        <a href="{% url 'mechanic:user_info_update' %}" class="btn btn-success ms-auto">
+            Edit account and password
+        </a>
+       </div>
+       <div class="content">        
+            <div class="tab">
+                <div class="tablinks">User Profile</div>
+                <button class="tablinks" onclick="opentab(event, 'personal')" id="defaultOpen">Personal</button>
+                <button class="tablinks" onclick="opentab(event, 'performance')">Performance</button>
+            </div>           
+       
+            <div id="personal" class="tabcontent">
+                <h3>Personal</h3>
+                <div class="details">
+                    <form action="">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Full Name</label>
+                                <input type="email" class="form-control" disabled value="{{ user.first_name }} {{ user.last_name }}" /> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Email</label>
+                                <input type="email" class="form-control" disabled value="{{ user.email }}" /> 
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Work Time</label>
+                                <input type="email" class="form-control" disabled value="{{ user.work_hours}}" /> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Location</label>
+                                <input type="email" class="form-control" disabled value="{{ user.location }}" /> 
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Added On</label>
+                                <input type="email" class="form-control" disabled value="{{ user.date_joined}}" /> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="colFormLabel">User Name</label>
+                                <input type="email" class="form-control" disabled value="{{ user }}"> 
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="performance" class="tabcontent">
+                <h3>Performance</h3>                
+                <div class="details">
+                    <form action="">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Full Name</label>
+                                <input type="email" class="form-control" disabled value="{{ user.first_name }} {{ user.last_name }}" /> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="colFormLabel">My Rating</label>
+                                <input type="email" class="form-control" disabled value="{{ user.location }}" />  
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="colFormLabel">work_hours</label>
+                                <input type="email" class="form-control" disabled value="{{ user.work_hours }}" /> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="colFormLabel">Experience</label>
+                                <input type="email" class="form-control" disabled value="{{ user.experience }}" />  
+                            </div>
+                        </div>                
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+ </div>
+{% endblock main-content %}

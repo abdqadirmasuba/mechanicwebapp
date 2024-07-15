@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -5,23 +6,67 @@ from django.contrib import messages
 from .forms import MechanicRegistrationForm
 from .models import Mechanic
 from django.contrib.gis.geos import Point
+from django.shortcuts import render, redirect
+from .models import Mechanic
+from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import D
+from django.core.serializers import serialize
+from django.http import JsonResponse
+from django.contrib.gis.geos import fromstr
+from mechanic.forms import CustomUserChangeForm
+
 
 # Create your views here.
 
 def home(request):
-    return render(request,"mymodels/home.html")
+    all_mechanics = Mechanic.objects.all()
+    
+    user_lat = 0.0  # Replace with actual user latitude
+    user_lng = 0.0  # Replace with actual user longitude
+    user_location = Point(user_lng, user_lat, srid=4326)  # Create Point object with SRID 4326
 
-def login(request):
+    # Filter mechanics within 10km from user's location
+    nearby_mechanics = Mechanic.objects.filter(
+        geo_location__distance_lte=(user_location, D(km=10))  # Mechanics within 10km
+    )
+
+
+    # Serialize mechanics queryset to JSON
+    mechanics_json = serialize('json', all_mechanics, fields=('geo_location', 'user__username'))
+
+    context = {
+        'all_mechanics_json': mechanics_json,
+        'all_mechanics': all_mechanics,
+
+    }
+    return render(request, 'mymodels/home.html', context)
+
+
+def get_nearby_mechanics(request):
+    lat = request.GET.get('lat')
+    lng = request.GET.get('lng')
+
+    if lat and lng:
+        user_location = fromstr(f'POINT({lng} {lat})', srid=4326)
+        nearby_mechanics = Mechanic.objects.annotate(distance=Distance('geo_location', user_location)).filter(distance__lte=D(km=10)).order_by('distance')
+        nearby_mechanics_json = json.loads(serialize('geojson', nearby_mechanics))
+        return JsonResponse(nearby_mechanics_json, safe=False)
+    return JsonResponse({'error': 'Invalid location'}, status=400)
+
+
+def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('mechanic:dashboard')
         else:
             messages.error(request, 'password or user name is wrong')
-            return redirect('general:login')
+            return redirect('mymodels:login_view')
              
     return render(request,"mymodels/login.html")
 
@@ -42,7 +87,6 @@ def register(request):
                 geo_location=geo_location
             )
             login(request, user)
-            print("sent in ")
             return redirect('mechanic:dashboard')
    
     else:
@@ -53,4 +97,4 @@ def register(request):
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('mechanic:dashboard')
+    return redirect('mymodels:login_view')

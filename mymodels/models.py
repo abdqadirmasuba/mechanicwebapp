@@ -2,7 +2,8 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 
-class User(AbstractUser):
+class Custom_User(AbstractUser):
+    profile = models.ImageField(upload_to='Profile/user/',blank=True,null=True)
     groups = models.ManyToManyField(
         Group,
         related_name='custom_user_set',  # Add a custom related_name
@@ -17,12 +18,13 @@ class User(AbstractUser):
         help_text=('Specific permissions for this user.'),
         verbose_name=('user permissions')
     )
+    
 
     def __str__(self):
         return self.username
 
 class Mechanic(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(Custom_User, on_delete=models.CASCADE)
     experience = models.IntegerField()
     vehicles_of_expertise = models.TextField()
     location = models.CharField(max_length=255)
@@ -35,16 +37,6 @@ class Mechanic(models.Model):
     def __str__(self):
         return f'{self.user.username} - Mechanic'
 
-class Car(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    model = models.CharField(max_length=100)
-    number = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='car_images/', blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f'{self.model} - {self.number}'
-    
 
 
 class Service(models.Model):
@@ -57,7 +49,7 @@ class Service(models.Model):
         return self.service_name
     
 
-
+    
 class Request(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
@@ -65,16 +57,18 @@ class Request(models.Model):
         ('Completed', 'Completed'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    mechanic = models.ForeignKey(Mechanic, on_delete=models.CASCADE)
-    car = models.ForeignKey(Car, on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    car_model = models.CharField(max_length=255)
+    car_number = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=20)
+    email = models.EmailField()
+    car_image = models.ImageField(upload_to='car_images/', null=True, blank=True)
+    geo_location = gis_models.PointField(geography=True, null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'Request {self.id} - {self.status}'
+        return f'{self.user.username} - {self.car_model}'
     
 
 
@@ -88,3 +82,13 @@ class Availability(models.Model):
 
     def __str__(self):
         return f'{self.mechanic.user.username} - {self.day_of_week} ({self.start_time} to {self.end_time})'
+
+
+
+class Notification(models.Model):
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.message
